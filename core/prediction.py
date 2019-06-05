@@ -1,6 +1,7 @@
 from sklearn import metrics
 from sklearn.neighbors import NearestNeighbors
 from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import GaussianNB
 import pandas as pd
 import numpy as np
 import geopandas as gpd
@@ -65,14 +66,21 @@ class Prediction():
         y_train=naive_train[['tweet_usps']].values
         X_test=new_point[['tweet_map','tweet_zcta','tweet_esri','predicted_k=5']].values
         y_test=new_point[['tweet_usps']].values
-
-        clf = MultinomialNB().fit(X_train, y_train)
         
+        ## multinomial naive base prediction
+        clf = MultinomialNB().fit(X_train, y_train)
         y_pred=clf.predict(new_point[['tweet_map','tweet_zcta','tweet_esri','predicted_k=5']])
-
-#        return new_p
-
-        return int(y_pred)
+        zip_prob = pd.DataFrame(clf.predict_proba(X_test), columns=clf.classes_)
+        #return int(y_pred)
+        #return zip_prob.to_json()  ## to return all the zips with probabilities
+        
+        ## gaussian prediction
+        clf_gs = GaussianNB().fit(X_train, y_train.ravel())
+        y_pred_gs = clf_gs.predict(X_test)
+        zip_prob_gs = pd.DataFrame(clf_gs.predict_proba(X_test), columns=clf_gs.classes_)
+        return zip_prob_gs
+        
+       
 
     ##get the tweetzip for closest k neighbors
     def most_frequent(self, val, idx, df):

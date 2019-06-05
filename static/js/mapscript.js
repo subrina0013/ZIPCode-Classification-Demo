@@ -19,8 +19,8 @@ function buildMap(divMapId, centerCoordinate, zoomLevel) {
         return map;
     };
 var mymap = loadOpenstreetMap('mapid', [28.540196, -81.387911], 13);
-var drawnItems = new L.FeatureGroup();
-mymap.addLayer(drawnItems);
+var itemsFeatureGroup = new L.FeatureGroup();
+mymap.addLayer(itemsFeatureGroup);
 
 function getCorrespondingFeature(zipCode) {
 	var geojsonFeature = {}
@@ -33,15 +33,48 @@ function getCorrespondingFeature(zipCode) {
 	return geojsonFeature;
 }
 
-function getPolygonLayer(geojsonFeature){
+function getPolygonLayer(geojsonFeature, color){
 	return L.geoJSON(geojsonFeature, {
 		onEachFeature: function(feature, layer){
-			console.log(feature)
+			//console.log(feature)
 	        layer.bindPopup("<h2> ZIPCode: " + feature.properties.zipc + "</h2>");
 		}
+	}).setStyle({
+		color: color	
 	});
 }
 
+function populateZipsOnMap(zipWithProbs){
+	// prob -> probability
+	maxProbKey = null;
+	maxProbValue = 0;
+	Object.keys(zipWithProbs).forEach(function(key, index){
+		//console.log(zipWithProbs)
+		zipCode = key
+		var geojsonFeature = getCorrespondingFeature(zipCode);
+		currentProbValue = zipWithProbs[key][0]
+		if(currentProbValue > maxProbValue){
+			maxProbValue = currentProbValue
+			maxProbKey = key
+		}
+		
+		// creating zip polygon on two conditions. if probability 
+		// is (<=.5 and >0) and >.5
+		if(currentProbValue <= 0.5 && currentProbValue > 0){
+			var zipCodePolygonLayer = getPolygonLayer(geojsonFeature, 'blue');
+			zipCodePolygonLayer.addTo(itemsFeatureGroup)
+		}
+		if(currentProbValue > 0.5){
+			var zipCodePolygonLayer = getPolygonLayer(geojsonFeature, 'red');
+			zipCodePolygonLayer.addTo(itemsFeatureGroup)
+		}
+	});
+	//console.log(itemsFeatureGroup.getBounds())
+	var geojsonFeature = getCorrespondingFeature(maxProbKey);
+	var zipCodePolygonLayer = getPolygonLayer(geojsonFeature, 'red');
+	zipCodePolygonLayer.addTo(itemsFeatureGroup)
+	mymap.fitBounds(itemsFeatureGroup.getBounds())
+}
 
 var popup = L.popup();
 function onMapClick(e) {
@@ -50,37 +83,17 @@ function onMapClick(e) {
         .setContent("You clicked the map at " + e.latlng.toString())
         .openOn(mymap);
 
-	console.log(e.latlng)
 	$.ajax({
 		type: "POST",
 		url: "http://localhost:5000/calculate",
 		data: {lat: e.latlng.lat, lng: e.latlng.lng}
 	}).done(function(response){
-		console.log(response);
-		console.log(orlando);
-		var zipCode = response;
-		var geojsonFeature = getCorrespondingFeature(zipCode);
-		var zipCodePolygonLayer = getPolygonLayer(geojsonFeature);
-		drawnItems.addLayer(zipCodePolygonLayer);
-		mymap.fitBounds(zipCodePolygonLayer.getBounds());
-		//drawnItems.removeLayer(zipCodePolygonLayer);		
+		itemsFeatureGroup.clearLayers()
+		response = JSON.parse(response);
+		populateZipsOnMap(response)
 	});
 }
 
 mymap.on('click', onMapClick);
-mymap.on('draw:created', function (e) {
-    var type = e.layerType,
-      layer = e.layer;
-    drawnItems.clearLayers();
-});
 
-var dummyProbabilities = {
-	"mainPrediction": 32801,
-	"otherPredictions": [
-		{"32802": ".7"},
-		{"32804": ".3"},
-		{"32805": ".4"},
-		{"32808": ".5"}
-	]
-}
 

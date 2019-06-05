@@ -23,7 +23,7 @@ def calculate():
     lng = float(request.form["lng"])
     prediction = Prediction(lng, lat)
     result = prediction.do_KNN_and_naive_bayes()
-    return jsonify(result)
+    return result.to_json()
 
 if __name__ == "__main__":
     app.run()

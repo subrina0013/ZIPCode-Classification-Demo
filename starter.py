@@ -1,6 +1,6 @@
 from flask_cors import CORS
 from flask import Flask, request, render_template, jsonify
-from geo_project_with_sigma_apu.core.prediction import Prediction
+from core.prediction import Prediction
 import json
 
 app = Flask(__name__, template_folder='.')

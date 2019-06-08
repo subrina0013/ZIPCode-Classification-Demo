@@ -7,11 +7,25 @@
 <link rel="stylesheet" href="{{ url_for('static',filename='libraries/leaflet/leaflet.css') }} " />
 </head>
 <body>
-	<div id="mapid"></div>
+  <div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <div style="overflow-x:auto;">
+      <h4>Zip with Probability in Sorted Order</h4>
+      <table id="myDynamicTable">
+      </table>
+    </div>
+  </div>
+
+<!-- Use any element to open the sidenav -->
+  <!-- <span onclick="openNav()">open</span> -->
+  <span style="font-size:30px;cursor:pointer;position: relative;z-index: 5;top: 113px;left: 15px;" onclick="openNav()">&#9776;</span>
+  <div id="mapid"></div>
+
+<!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
 
 <script src="{{ url_for('static',filename='js/orlando_polygons.js') }}"></script>
 <script src="{{ url_for('static',filename='libraries/jquery.min.js') }}"></script>
 <script src="{{ url_for('static',filename='libraries/leaflet/leaflet.js') }}"></script>
 <script src="{{ url_for('static',filename='js/mapscript.js') }}"></script>
 </body>
-</html> 
+</html>

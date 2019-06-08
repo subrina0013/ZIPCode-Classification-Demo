@@ -86,6 +86,43 @@ function populateCandidatesOnMap(candidates, locations, annotations){
   }
 }
 
+function generateDynamicTable(zipWithProbs){
+  var myTableDiv = document.getElementById("myDynamicTable")
+  var table = document.createElement('TABLE')
+  table.border='1'
+  // var caption = document.createElement('CAPTION')
+  // caption.innerHTML = "Zip with Probability"
+  // table.appendChild(caption)
+  var tableBody = document.createElement('TBODY')
+  table.appendChild(tableBody)
+
+    var trHeaderRow = document.createElement('TR')
+    tableBody.appendChild(trHeaderRow)
+    var trProbRow = document.createElement('TR')
+    tableBody.appendChild(trProbRow)
+    for (var i = 0; i < zipWithProbs.length; i++) {
+      var th = document.createElement('TH')
+      th.innerHTML = zipWithProbs[i].zip
+      trHeaderRow.appendChild(th)
+
+      td = document.createElement("TD")
+      td.innerHTML = zipWithProbs[i].prob
+      trProbRow.appendChild(td)
+    }
+  myTableDiv.innerHTML = ""
+  myTableDiv.appendChild(table)
+}
+
+function sort(zipWithProbs){
+  zips = []
+  Object.keys(zipWithProbs).forEach(function(key, index){
+    zips.push({"zip": key, "prob": zipWithProbs[key][0]})
+  })
+  zips.sort(function(a, b){
+    return b.prob - a.prob
+  });
+  return zips;
+}
 var popup = L.popup();
 function onMapClick(e) {
     popup
@@ -100,11 +137,26 @@ function onMapClick(e) {
 	}).done(function(response){
 		itemsFeatureGroup.clearLayers()
 		response = JSON.parse(response);
+    zip_with_probs = JSON.parse(response.zip_with_probs)
     console.log(response)
-		populateZipsOnMap(JSON.parse(response.zip_with_probs))
+		populateZipsOnMap(zip_with_probs)
     populateCandidatesOnMap(response.candidates, response.candidate_loc, response.candidate_annotation)
+    generateDynamicTable(sort(zip_with_probs))
+    openNav()
     mymap.fitBounds(itemsFeatureGroup.getBounds())
 	});
 }
 
 mymap.on('click', onMapClick);
+
+/* Set the width of the side navigation to 250px and the left margin of the page content to 250px */
+function openNav() {
+  document.getElementById("mySidenav").style.width = "350px";
+  document.getElementById("mapid").style.marginLeft = "350px";
+}
+
+/* Set the width of the side navigation to 0 and the left margin of the page content to 0 */
+function closeNav() {
+  document.getElementById("mySidenav").style.width = "0";
+  document.getElementById("mapid").style.marginLeft = "0";
+}

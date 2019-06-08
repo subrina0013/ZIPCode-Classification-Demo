@@ -1,6 +1,7 @@
 from flask_cors import CORS
 from flask import Flask, request, render_template, jsonify
 from geo_project_with_sigma_apu.core.prediction import Prediction
+import json
 
 app = Flask(__name__, template_folder='.')
 CORS(app)
@@ -23,7 +24,7 @@ def calculate():
     lng = float(request.form["lng"])
     prediction = Prediction(lng, lat)
     result = prediction.do_KNN_and_naive_bayes()
-    return result.to_json()
+    return json.dumps(result)#.to_json()
 
 if __name__ == "__main__":
     app.run()

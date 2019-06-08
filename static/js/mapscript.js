@@ -29,7 +29,7 @@ function getCorrespondingFeature(zipCode) {
 			geojsonFeature = orlando[0].features[i];
 			break;
 		}
-	}	
+	}
 	return geojsonFeature;
 }
 
@@ -40,8 +40,13 @@ function getPolygonLayer(geojsonFeature, color){
 	        layer.bindPopup("<h2> ZIPCode: " + feature.properties.zipc + "</h2>");
 		}
 	}).setStyle({
-		color: color	
+		color: color
 	});
+}
+
+function getMarker(latlng, annotation){
+  //latlng should be an array like [lat, lng]
+  return L.marker(latlng).bindPopup("<h2> Tweet: " + annotation + "</h2>");
 }
 
 function populateZipsOnMap(zipWithProbs){
@@ -57,8 +62,8 @@ function populateZipsOnMap(zipWithProbs){
 			maxProbValue = currentProbValue
 			maxProbKey = key
 		}
-		
-		// creating zip polygon on two conditions. if probability 
+
+		// creating zip polygon on two conditions. if probability
 		// is (<=.5 and >0) and >.5
 		if(currentProbValue <= 0.5 && currentProbValue > 0){
 			var zipCodePolygonLayer = getPolygonLayer(geojsonFeature, 'blue');
@@ -73,7 +78,12 @@ function populateZipsOnMap(zipWithProbs){
 	var geojsonFeature = getCorrespondingFeature(maxProbKey);
 	var zipCodePolygonLayer = getPolygonLayer(geojsonFeature, 'red');
 	zipCodePolygonLayer.addTo(itemsFeatureGroup)
-	mymap.fitBounds(itemsFeatureGroup.getBounds())
+}
+
+function populateCandidatesOnMap(candidates, locations, annotations){
+  for (var i = 0; i < candidates.length; i++) {
+    getMarker(locations[i].reverse(), annotations[i]).addTo(itemsFeatureGroup)
+  }
 }
 
 var popup = L.popup();
@@ -90,10 +100,11 @@ function onMapClick(e) {
 	}).done(function(response){
 		itemsFeatureGroup.clearLayers()
 		response = JSON.parse(response);
-		populateZipsOnMap(response)
+    console.log(response)
+		populateZipsOnMap(JSON.parse(response.zip_with_probs))
+    populateCandidatesOnMap(response.candidates, response.candidate_loc, response.candidate_annotation)
+    mymap.fitBounds(itemsFeatureGroup.getBounds())
 	});
 }
 
 mymap.on('click', onMapClick);
-
-

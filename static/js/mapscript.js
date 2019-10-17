@@ -22,6 +22,17 @@ var mymap = loadOpenstreetMap('mapid', [28.540196, -81.387911], 13);
 var itemsFeatureGroup = new L.FeatureGroup();
 mymap.addLayer(itemsFeatureGroup);
 
+function polystyle(feature) {
+    return {
+        fillColor: 'blue',
+        weight: 2,
+        opacity: 1,
+        color: 'blue',  //Outline color
+        fillOpacity: 0
+    };
+}
+L.geoJSON(orlando_boundary, {style: polystyle}).addTo(mymap);
+
 function getCorrespondingFeature(zipCode) {
   var geojsonFeature = {}
   for (i = 0; i < orlando[0].features.length; i++) {

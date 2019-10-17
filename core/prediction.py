@@ -13,7 +13,7 @@ class Prediction():
 
     def do_KNN_and_naive_bayes(self):
         new_p = self.new_p
-        print(new_p)
+        # print(new_p)
         df= pd.read_excel('core/tweets_location.xls')
         #new_p= [-81.33020, 28.5380]    #the point for which i need to know the zipcode
         ## KNN on lat long of the tweetzips.
@@ -49,7 +49,7 @@ class Prediction():
 
         ##intersect geodataframe of the point to the polygon geodataframe and get the zipcode
         pnt = gpd.GeoDataFrame(geometry=[sp])
-        print("here")
+        # print("here")
         usps_int=gpd.sjoin(pnt, usps[['zipc','geometry']], how='left', op='intersects')
 
         new_point['tweet_usps'] = usps_int.zipc

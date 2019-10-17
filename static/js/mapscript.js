@@ -46,7 +46,8 @@ function getPolygonLayer(geojsonFeature, color) {
 
 function getMarker(latlng, annotation) {
   //latlng should be an array like [lat, lng]
-  return L.marker(latlng).bindPopup("<h2> Tweet: " + annotation + "</h2>");
+  console.log(latlng[1])
+  return L.marker(latlng).bindPopup("<h2> Tweet: " + annotation + ', ' + latlng[0] + ', ' + latlng[1] + "</h2>");
 }
 
 function populateZipsOnMap(zipWithProbs) {

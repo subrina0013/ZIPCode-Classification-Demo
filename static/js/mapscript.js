@@ -24,14 +24,14 @@ mymap.addLayer(itemsFeatureGroup);
 
 function polystyle(feature) {
     return {
-        fillColor: 'blue',
+        fillColor: 'red',
         weight: 2,
         opacity: 1,
         color: 'blue',  //Outline color
-        fillOpacity: 0
+        fillOpacity: .5
     };
 }
-L.geoJSON(orlando_boundary, {style: polystyle}).addTo(mymap);
+L.geoJSON(orlando_outside_boundary, {style: polystyle}).addTo(mymap);
 
 function getCorrespondingFeature(zipCode) {
   var geojsonFeature = {}
@@ -164,6 +164,10 @@ function onMapClick(e) {
     openNav()
     mymap.fitBounds(itemsFeatureGroup.getBounds())
   });
+}
+
+function onRefresh(){
+  itemsFeatureGroup.clearLayers();
 }
 
 mymap.on('click', onMapClick);

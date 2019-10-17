@@ -10,6 +10,9 @@
 
  <body>
    <div id="mySidenav" class="sidenav">
+     <button type="button" class="btn btn-default btn-sm" onclick="onRefresh()">
+       <span class="glyphicon glyphicon-refresh"></span> Refresh
+     </button>
      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
      <div style="overflow-x:auto;">
        <h4>Zip with Probability in Sorted Order</h4>
@@ -21,7 +24,8 @@
    <span style="font-size:30px;cursor:pointer;position: relative;z-index: 5;top: 113px;left: 15px;" onclick="openNav()">&#9776;</span>
    <div id="mapid"></div>
 
-   <script src="{{ url_for('static',filename='js/orlando_boundary.js') }}"></script>
+   <!-- <script src="{{ url_for('static',filename='js/orlando_boundary.js') }}"></script> -->
+   <script src="{{ url_for('static',filename='js/orlando_outside_boundary.js') }}"></script>
    <script src="{{ url_for('static',filename='js/orlando_polygons.js') }}"></script>
    <script src="{{ url_for('static',filename='libraries/jquery.min.js') }}"></script>
    <script src="{{ url_for('static',filename='libraries/leaflet/leaflet.js') }}"></script>

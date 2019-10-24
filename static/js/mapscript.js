@@ -24,7 +24,7 @@ mymap.addLayer(itemsFeatureGroup);
 
 function polystyle(feature) {
     return {
-        fillColor: 'red',
+        fillColor: 'gray',
         weight: 2,
         opacity: 1,
         color: 'blue',  //Outline color
@@ -168,6 +168,8 @@ function onMapClick(e) {
 
 function onRefresh(){
   itemsFeatureGroup.clearLayers();
+  var myTableDiv = document.getElementById("myDynamicTable")
+  myTableDiv.innerHTML = '';
 }
 
 mymap.on('click', onMapClick);

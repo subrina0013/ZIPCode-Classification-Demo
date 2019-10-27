@@ -55,10 +55,10 @@ function getPolygonLayer(geojsonFeature, color) {
   });
 }
 
-function getMarker(latlng, annotation) {
+function getMarker(latlng, annotation, raw_tweet) {
   //latlng should be an array like [lat, lng]
-  console.log(latlng[1])
-  return L.marker(latlng).bindPopup("<h2> Tweet: " + annotation + ', ' + latlng[0] + ', ' + latlng[1] + "</h2>");
+  // console.log(raw_tweet)
+  return L.marker(latlng).bindPopup("<h2> Tweet: " + annotation + "<br> Annotation: " + raw_tweet + "</h2>" +  "<h2> LatLong: " + latlng[0] + ', ' + latlng[1] + "</h2>");
 }
 
 function populateZipsOnMap(zipWithProbs) {
@@ -92,9 +92,9 @@ function populateZipsOnMap(zipWithProbs) {
   zipCodePolygonLayer.addTo(itemsFeatureGroup)
 }
 
-function populateCandidatesOnMap(candidates, locations, annotations) {
+function populateCandidatesOnMap(candidates, locations, annotations, raw_tweets) {
   for (var i = 0; i < candidates.length; i++) {
-    getMarker(locations[i].reverse(), annotations[i]).addTo(itemsFeatureGroup)
+    getMarker(locations[i].reverse(), annotations[i], raw_tweets[i]).addTo(itemsFeatureGroup)
   }
 }
 
@@ -157,9 +157,8 @@ function onMapClick(e) {
     itemsFeatureGroup.clearLayers()
     response = JSON.parse(response);
     zip_with_probs = JSON.parse(response.zip_with_probs)
-    console.log(response)
     populateZipsOnMap(zip_with_probs)
-    populateCandidatesOnMap(response.candidates, response.candidate_loc, response.candidate_annotation)
+    populateCandidatesOnMap(response.candidates, response.candidate_loc, response.candidate_annotation, response.raw_tweets)
     generateDynamicTable(sort(zip_with_probs))
     openNav()
     mymap.fitBounds(itemsFeatureGroup.getBounds())

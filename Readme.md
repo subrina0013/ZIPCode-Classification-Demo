@@ -18,13 +18,13 @@ FLASK_APP=starter.py flask run
 
 The file path looks as follows:
 
-starter.py
-index.html
-static/
-	css/
+1. starter.py
+2. index.html
+3. static/
+	3.1 css/
 		style.css
-	js/
+	3.2 js/
 		mapscript.js
-	libraries/
+	3.3 libraries/
 		leaflet/
 		jquery.min.js

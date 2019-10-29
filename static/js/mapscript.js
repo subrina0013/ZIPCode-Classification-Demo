@@ -31,7 +31,11 @@ function polystyle(feature) {
         fillOpacity: .5
     };
 }
-L.geoJSON(orlando_outside_boundary, {style: polystyle}).addTo(mymap);
+out_boundary_layer = L.geoJSON(orlando_outside_boundary, {style: polystyle})
+out_boundary_layer.addTo(mymap);
+out_boundary_layer.on('click', function(e){
+  L.DomEvent.stopPropagation(e);
+});
 
 function getCorrespondingFeature(zipCode) {
   var geojsonFeature = {}

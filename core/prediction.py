@@ -54,15 +54,15 @@ class Prediction():
         pnt = gpd.GeoDataFrame(geometry=[sp])
         # print("here")
         usps_int = gpd.sjoin(
-            pnt, usps[['zipc', 'geometry']], how='left', op='intersects')
+            pnt, usps[['zipc', 'geometry']], how='inner', op='intersects')
 
         new_point['tweet_usps'] = usps_int.zipc
         esri_int = gpd.sjoin(
-            pnt, esri[['ZIP_number', 'geometry']], how='left', op='intersects')
+            pnt, esri[['ZIP_number', 'geometry']], how='inner', op='intersects')
         zcta_int = gpd.sjoin(
-            pnt, zcta[['ZCTA5CE10', 'geometry']], how='left', op='intersects')
+            pnt, zcta[['ZCTA5CE10', 'geometry']], how='inner', op='intersects')
         map1_int = gpd.sjoin(
-            pnt, map1[['ZIP', 'geometry']], how='left', op='intersects')
+            pnt, map1[['ZIP', 'geometry']], how='inner', op='intersects')
 
         new_point['tweet_map'] = map1_int.ZIP
         new_point['tweet_zcta'] = zcta_int.ZCTA5CE10

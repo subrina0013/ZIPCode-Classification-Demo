@@ -14,14 +14,12 @@ class Prediction():
 
     def do_KNN_and_naive_bayes(self):
         new_p = self.new_p
-        # print(new_p)
-        # df= pd.read_excel('core/tweets_location.xls')
         df = pd.read_csv('core/tweets_location.csv')
         # new_p= [-81.33response020, 28.5380]    #the point for which i need to know the zipcode
         # KNN on lat long of the tweetzips.
         n_neighbors = 5
-        samples = df.as_matrix(['longi', 'lat'])
-        neigh = NearestNeighbors(n_neighbors)
+        samples = df[['longi', 'lat']].to_numpy()
+        neigh = NearestNeighbors(n_neighbors=n_neighbors)
         neigh.fit(samples)
         NearestNeighbors(algorithm='auto', metric='haversine')
         a, b = neigh.kneighbors([new_p])
@@ -32,7 +30,6 @@ class Prediction():
         new_point['predicted_k=%s' % str(n_neighbors)] = tweetzip
         # make a shaply point
         sp = Point(new_p[0], new_p[1])
-        sp.crs = {'init': 'epsg:4326'}
         usps = gpd.GeoDataFrame.from_file('core/maps/usps_wgs84.shp')
         esri = gpd.GeoDataFrame.from_file('core/maps/esri_wgs84.shp')
         zcta = gpd.GeoDataFrame.from_file('core/maps/zcta_wgs84.shp')
@@ -54,15 +51,15 @@ class Prediction():
         pnt = gpd.GeoDataFrame(geometry=[sp])
         # print("here")
         usps_int = gpd.sjoin(
-            pnt, usps[['zipc', 'geometry']], how='inner', op='intersects')
+            pnt, usps[['zipc', 'geometry']], how='inner', predicate='intersects')
 
         new_point['tweet_usps'] = usps_int.zipc
         esri_int = gpd.sjoin(
-            pnt, esri[['ZIP_number', 'geometry']], how='inner', op='intersects')
+            pnt, esri[['ZIP_number', 'geometry']], how='inner', predicate='intersects')
         zcta_int = gpd.sjoin(
-            pnt, zcta[['ZCTA5CE10', 'geometry']], how='inner', op='intersects')
+            pnt, zcta[['ZCTA5CE10', 'geometry']], how='inner', predicate='intersects')
         map1_int = gpd.sjoin(
-            pnt, map1[['ZIP', 'geometry']], how='inner', op='intersects')
+            pnt, map1[['ZIP', 'geometry']], how='inner', predicate='intersects')
 
         new_point['tweet_map'] = map1_int.ZIP
         new_point['tweet_zcta'] = zcta_int.ZCTA5CE10

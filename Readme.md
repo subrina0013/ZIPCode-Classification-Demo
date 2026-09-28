@@ -1,3 +1,5 @@
+CrowdZIP is a geospatial classification system that predicts the most likely ZIP Code for a given location by combining multiple ZIP Code boundary datasets and crowdsourced geotagged information. It also quantifies uncertainty by providing probability distributions across candidate ZIP Codes rather than relying on a single polygon map.
+
 Prerequisites:
 Your machine needs to have Python, git installed.
 If not, install from here <https://www.python.org/downloads/>, <https://git-scm.com/install/>
